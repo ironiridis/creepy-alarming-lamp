@@ -16,8 +16,8 @@ talk() {
 }
 
 connectTo() {
-  echo connecting to $1:23 >2
-  talk | nc -w 5 $1 23
+  echo connecting to $1:23 >&2
+  talk | timeout -t 20 nc $1 23
 }
 
 sweep() {
@@ -29,7 +29,7 @@ sweep() {
     SCAN="$1"
     N=localhost
   fi
-  echo scanning $SCAN:23 >2
+  echo scanning $SCAN:23 >&2
   nmap -p 23 --open -oG hosts_$N $SCAN >/dev/null 2>&1
   sed -En -i 's/^Host: ([0-9.]+) .+Ports:.+$/\1/p' hosts_$N
   for H in `cat hosts_$N` ; do connectTo $H ; done
@@ -38,5 +38,5 @@ sweep() {
 echo testing sweep with localhost
 sweep 127.0.0.1
 
-echo scanning subnet $MYSUBNET.0.0/16 >2
+echo scanning subnet $MYSUBNET.0.0/16 >&2
 while true ; do sweep ; done

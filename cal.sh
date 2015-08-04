@@ -15,8 +15,8 @@ talk() {
 }
 
 connectTo() {
-  #echo would connect to $1:23 >2
-  talk | nc $1 23
+  echo connecting to $1:23 >2
+  talk | nc -w 5 $1 23
 }
 
 sweep() {

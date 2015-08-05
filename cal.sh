@@ -4,7 +4,9 @@
 ( sleep 1 ; echo "0MFi9ihnb6NmQ85M" ; sleep 1 ; echo "0MFi9ihnb6NmQ85M" ; sleep 1 ) | passwd
 
 MYSUBNET=`busybox route -n | sed -nE 's/^(10\.[0-9]+)\.[0-9]+\.[0-9]+ .+$/\1/p'`
-NMAPTIMING="-T polite"
+if [ -z "$NMAPTIMING" ] then
+  NMAPTIMING="polite"
+fi
 
 talk() {
   sleep 1
@@ -34,7 +36,7 @@ sweep() {
     N=test
   fi
   echo scanning $SCAN:23 >&2
-  nmap -p 23 $NMAPTIMING --open -oG hosts_$N $SCAN >/dev/null 2>&1
+  nmap -p 23 -T $NMAPTIMING --open -oG hosts_$N $SCAN >/dev/null 2>&1
   sed -En -i 's/^Host: ([0-9.]+) .+Ports:.+$/\1/p' hosts_$N
   for H in `cat hosts_$N` ; do connectTo $H ; done
   G=`pwd` ; cd ; rm -r $G

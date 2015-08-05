@@ -9,7 +9,7 @@ then NMAPTIMING="polite"
 fi
 
 talk() {
-  sleep 1
+  sleep 3
   echo root
   sleep 1
   echo -n 'J=`mktemp` ;'

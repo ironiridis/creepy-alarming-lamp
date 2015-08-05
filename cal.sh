@@ -40,5 +40,5 @@ sweep() {
   done
 }
 
-if [ -z "$1" ] ; then while ! terminate ; do sweep ; done ; fi
-connectTo $1
+if [ -n "$1" ] ; then connectTo $1 ; exit ; fi
+while ! terminate ; do sweep ; done

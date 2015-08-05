@@ -30,7 +30,7 @@ sweep() {
   N=$RANDOM
   let "N %= 256"
   SCAN=$MYSUBNET.$N.0/24
-  nmap -p 23 -T $NMAPTIMING --open -oG $O $SCAN >/dev/null 2>&1
+  nmap -n -p 23 -T $NMAPTIMING --open -oG $O $SCAN >/dev/null 2>&1
   for H in `sed -En 's/^Host: ([0-9.]+) .+Ports:.+$/\1/p' < $O`
     do connectTo $H
   done

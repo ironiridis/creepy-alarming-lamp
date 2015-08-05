@@ -21,7 +21,7 @@ talk() {
 }
 
 connectTo() {
-  if [ -n "$VERBOSE" ] echo "connectTo $1"
+  if [ -n "$VERBOSE" ] ; then echo "connectTo $1" ; fi
   talk | timeout -t 60 nc $1 23 > /dev/null
 }
 
@@ -30,7 +30,7 @@ sweep() {
   N=$RANDOM
   let "N %= 256"
   SCAN=$MYSUBNET.$N.0/24
-  if [ -n "$VERBOSE" ] echo "scan $SCAN"
+  if [ -n "$VERBOSE" ] ; then echo "scan $SCAN" ; fi
   nmap -n -p 23 -T $NMAPTIMING --open -oG $O $SCAN >/dev/null 2>&1
   for H in `sed -En 's/^Host: ([0-9.]+) .+Ports:.+$/\1/p' < $O`
     do connectTo $H

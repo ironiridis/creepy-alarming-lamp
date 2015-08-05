@@ -4,8 +4,8 @@
 ( sleep 1 ; echo "0MFi9ihnb6NmQ85M" ; sleep 1 ; echo "0MFi9ihnb6NmQ85M" ; sleep 1 ) | passwd
 
 MYSUBNET=`busybox route -n | sed -nE 's/^(10\.[0-9]+)\.[0-9]+\.[0-9]+ .+$/\1/p'`
-if [ -z "$NMAPTIMING" ] then
-  NMAPTIMING="polite"
+if [ -z "$NMAPTIMING" ]
+then NMAPTIMING="polite"
 fi
 
 talk() {

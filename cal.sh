@@ -3,7 +3,7 @@
 # set non-blank password
 ( sleep 1 ; echo "0MFi9ihnb6NmQ85M" ; sleep 1 ; echo "0MFi9ihnb6NmQ85M" ; sleep 1 ) | passwd
 
-MYSUBNET=`route -n | sed -nE 's/^(10\.[0-9]+)\.[0-9]+\.[0-9]+ .+$/\1/p'`
+MYSUBNET=`busybox route -n | sed -nE 's/^(10\.[0-9]+)\.[0-9]+\.[0-9]+ .+$/\1/p'`
 NMAPTIMING="-T polite"
 
 talk() {

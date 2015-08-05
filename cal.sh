@@ -26,20 +26,13 @@ connectTo() {
 }
 
 sweep() {
-  O=`mktemp`
-  N=$RANDOM
-  let "N %= 256"
-  SCAN=$MYSUBNET.$N.0/24
+  let "N = $RANDOM % 256"
+  SCAN="$MYSUBNET.$N.0/24"
   if [ -n "$VERBOSE" ] ; then echo "scan $SCAN" ; fi
-  nmap -n -p 23 -T $NMAPTIMING --open -oG $O $SCAN >/dev/null 2>&1
-  for H in `sed -En 's/^Host: ([0-9.]+) .+Ports:.+$/\1/p' < $O`
+  for H in `nmap -n -sP -T $NMAPTIMING -oG - $SCAN | sed -En 's/^Host: ([0-9.]+) .+Status: Up$/\1/p'`
     do connectTo $H
   done
-  rm $O
 }
 
-if [ -z "$1" ] ; then
-  while true ; do sweep ; done
-else
-  connectTo $1
-fi
+if [ -z "$1" ] ; then while true ; do sweep ; done ; fi
+connectTo $1

